@@ -97,6 +97,24 @@ LOG_CONFIGS = {
         "colorspace": colour.models.RGB_COLOURSPACE_RED_WIDE_GAMUT_RGB,
         "full_name": "RED Log3G10 / RED Wide Gamut RGB",
     },
+    "Rec.709 Gamma 2.4": {
+        "encoding": colour.models.oetf_BT709,
+        "decoding": colour.models.oetf_inverse_BT709,
+        "colorspace": colour.models.RGB_COLOURSPACE_BT709,
+        "full_name": "Rec.709 Gamma 2.4 / Rec.709",
+    },
+    "Rec.2020 Gamma 2.4": {
+        "encoding": colour.models.oetf_BT2020,
+        "decoding": colour.models.oetf_inverse_BT2020,
+        "colorspace": colour.models.RGB_COLOURSPACE_BT2020,
+        "full_name": "Rec.2020 Gamma 2.4 / Rec.2020",
+    },
+    "sRGB": {
+        "encoding": colour.models.eotf_inverse_sRGB,
+        "decoding": colour.models.eotf_sRGB,
+        "colorspace": colour.models.RGB_COLOURSPACE_sRGB,
+        "full_name": "sRGB / sRGB",
+    },
 }
 
 
