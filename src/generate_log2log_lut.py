@@ -12,11 +12,29 @@ import numpy as np
 
 # Log curve and color space configuration
 LOG_CONFIGS = {
+    "S-Log3": {
+        "encoding": colour.models.log_encoding_SLog3,
+        "decoding": colour.models.log_decoding_SLog3,
+        "colorspace": colour.models.RGB_COLOURSPACE_S_GAMUT3,
+        "full_name": "Sony S-Log3 / S-Gamut3",
+    },
     "S-Log3.Cine": {
         "encoding": colour.models.log_encoding_SLog3,
         "decoding": colour.models.log_decoding_SLog3,
         "colorspace": colour.models.RGB_COLOURSPACE_S_GAMUT3_CINE,
         "full_name": "Sony S-Log3 / S-Gamut3.Cine",
+    },
+    "F-Log": {
+        "encoding": colour.models.log_encoding_FLog,
+        "decoding": colour.models.log_decoding_FLog,
+        "colorspace": colour.models.RGB_COLOURSPACE_F_GAMUT,
+        "full_name": "Fujifilm F-Log / F-Gamut",
+    },
+    "F-Log2": {
+        "encoding": colour.models.log_encoding_FLog2,
+        "decoding": colour.models.log_decoding_FLog2,
+        "colorspace": colour.models.RGB_COLOURSPACE_F_GAMUT,
+        "full_name": "Fujifilm F-Log2 / F-Gamut",
     },
     "F-Log2C": {
         "encoding": colour.models.log_encoding_FLog2,
@@ -24,11 +42,23 @@ LOG_CONFIGS = {
         "colorspace": colour.models.RGB_COLOURSPACE_F_GAMUT_C,
         "full_name": "Fujifilm F-Log2 C / F-Gamut C",
     },
+    "C-Log2": {
+        "encoding": colour.models.log_encoding_CanonLog2,
+        "decoding": colour.models.log_decoding_CanonLog2,
+        "colorspace": colour.models.RGB_COLOURSPACE_CINEMA_GAMUT,
+        "full_name": "Canon Log 2 / Cinema Gamut",
+    },
     "C-Log3": {
         "encoding": colour.models.log_encoding_CanonLog3,
         "decoding": colour.models.log_decoding_CanonLog3,
         "colorspace": colour.models.RGB_COLOURSPACE_CINEMA_GAMUT,
         "full_name": "Canon Log 3 / Cinema Gamut",
+    },
+    "LogC3": {
+        "encoding": colour.models.log_encoding_ARRILogC3,
+        "decoding": colour.models.log_decoding_ARRILogC3,
+        "colorspace": colour.models.RGB_COLOURSPACE_ARRI_WIDE_GAMUT_3,
+        "full_name": "ARRI LogC3 / ARRI Wide Gamut 3",
     },
     "LogC4": {
         "encoding": colour.models.log_encoding_ARRILogC4,
@@ -48,11 +78,24 @@ LOG_CONFIGS = {
         "colorspace": colour.models.RGB_COLOURSPACE_N_GAMUT,
         "full_name": "Nikon N-Log / N-Gamut",
     },
+    "L-Log": {
+        "encoding": colour.models.log_encoding_LLog,
+        "decoding": colour.models.log_decoding_LLog,
+        # L-log uses BT.2020 gamut
+        "colorspace": colour.models.RGB_COLOURSPACE_BT2020,
+        "full_name": "Leica L-Log / L-Gamut",
+    },
     "DaVinci Intermediate": {
         "encoding": colour.models.oetf_DaVinciIntermediate,
         "decoding": colour.models.oetf_inverse_DaVinciIntermediate,
         "colorspace": colour.models.RGB_COLOURSPACE_DAVINCI_WIDE_GAMUT,
         "full_name": "DaVinci Intermediate / DaVinci Wide Gamut",
+    },
+    "Log3G10": {
+        "encoding": colour.models.log_encoding_Log3G10,
+        "decoding": colour.models.log_decoding_Log3G10,
+        "colorspace": colour.models.RGB_COLOURSPACE_RED_WIDE_GAMUT_RGB,
+        "full_name": "RED Log3G10 / RED Wide Gamut RGB",
     },
 }
 
