@@ -58,6 +58,8 @@ Notes:
 python src/gui.py
 ```
 
+![image-gui](./static/GUI.png)
+
 ### **What each tab does**
 
 - **Generate LUT**: Create Log-to-Log “bridge” LUTs (single conversion or batch). Output is written to the selected output directory.

@@ -58,6 +58,8 @@ pip install -r requirements.txt
 python src/gui.py
 ```
 
+![image-gui](./static/GUI.png)
+
 ### **各个标签页功能**
 
 - **Generate LUT**：生成 Log-to-Log 的“桥接 LUT”（支持单个转换或批量生成），输出到所选输出目录。
