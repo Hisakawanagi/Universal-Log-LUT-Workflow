@@ -29,9 +29,41 @@
 
 - [Raw-Alchemy](https://github.com/shenmintao/Raw-Alchemy/)（用于 RAW 转换）
 - Adobe Photoshop
-- 自定义 Python 脚本：
+- Python 3 + `requirements.txt` 中的依赖
+- 可选：本仓库提供一个简单的 GUI：`src/gui.py`
+- 自定义 Python 脚本（下方步骤会用到 / GUI 也会调用）：
   - `generate_log2log_lut.py`
   - `concatenate_luts.py`
+  - `compare_images.py`
+  - `resize_lut.py`
+
+## **3.1. 可选：使用 GUI（无需命令行）**
+
+如果您不想逐个在命令行里运行脚本，本仓库包含一个基于 Tkinter 的小型 GUI，用于整合 LUT 工具。
+
+### **安装**
+
+在仓库根目录执行：
+
+```bash
+pip install -r requirements.txt
+```
+
+说明：
+- 在 Linux 上，如果 `import tkinter` 失败，可能需要通过系统包管理器安装 Tkinter（例如 Debian/Ubuntu 上的 `python3-tk`）。
+
+### **启动**
+
+```bash
+python src/gui.py
+```
+
+### **各个标签页功能**
+
+- **Generate LUT**：生成 Log-to-Log 的“桥接 LUT”（支持单个转换或批量生成），输出到所选输出目录。
+- **Concatenate LUTs**：将两个 LUT 合并为一个（支持文件到文件，或目录/批处理；当输入类型选择 Directory 时启用批量）。
+- **Compare Images**：对比单张图片对或两个目录，可选生成可视化结果，并支持差异放大（Amplification）。
+- **Resize LUT**：调整 LUT 网格大小（例如 65 → 33）。如果输出留空，GUI 会自动生成输出文件名。
 
 # **4\. 详细步骤**
 

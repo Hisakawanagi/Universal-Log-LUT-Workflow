@@ -29,9 +29,41 @@ The process consists of two main phases:
 
 - [Raw-Alchemy](https://github.com/shenmintao/Raw-Alchemy/) (for RAW conversion)
 - Adobe Photoshop
-- Custom Python Scripts (provided below):
+- Python 3 + dependencies in `requirements.txt`
+- Optional: a simple GUI wrapper: `src/gui.py`
+- Custom Python Scripts (provided below / used by the GUI):
   - `generate_log2log_lut.py`
   - `concatenate_luts.py`
+  - `compare_images.py`
+  - `resize_lut.py`
+
+## **3.1. Optional: Use the GUI (No CLI Needed)**
+
+If you prefer not to run individual scripts from the command line, this repo includes a small Tkinter-based GUI that integrates the LUT tools.
+
+### **Install**
+
+From the repo root:
+
+```bash
+pip install -r requirements.txt
+```
+
+Notes:
+- On Linux, you may need to install Tkinter via your system package manager (for example `python3-tk`) if `import tkinter` fails.
+
+### **Launch**
+
+```bash
+python src/gui.py
+```
+
+### **What each tab does**
+
+- **Generate LUT**: Create Log-to-Log “bridge” LUTs (single conversion or batch). Output is written to the selected output directory.
+- **Concatenate LUTs**: Merge two LUTs into one. Supports file-to-file concatenation, or directory/batch processing (set the input type to Directory).
+- **Compare Images**: Compare either a single image pair or two directories of images. Optionally generates a visualization and supports amplification.
+- **Resize LUT**: Change LUT grid size (e.g. 65 → 33). If Output is left empty, the GUI auto-generates an output filename.
 
 # **4\. Step-by-Step Implementation**
 
