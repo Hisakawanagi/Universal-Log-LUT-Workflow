@@ -39,7 +39,10 @@ def _combine_single_pair(lut1_path, lut2_path, output_path):
         # The resolution (size) will match LUT1, which is standard for concatenation.
         # new_name = f"{os.path.splitext(os.path.basename(lut1_path))[0]}_PLUS_{os.path.splitext(os.path.basename(lut2_path))[0]}"
         # use 1st LUT name only
-        new_name = f"{os.path.splitext(os.path.basename(lut2_path))[0]}"
+        base1 = os.path.splitext(os.path.basename(lut1_path))[0]
+        base2 = os.path.splitext(os.path.basename(lut2_path))[0]
+        new_name = f"{base1}_PLUS_{base2}"
+
 
         combined_lut = colour.LUT3D(table=combined_table, name=new_name)
 
