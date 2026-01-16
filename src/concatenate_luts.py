@@ -5,7 +5,21 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from multiprocessing import cpu_count
 
 import colour
+import numpy as np
 
+def analyze_lut_range(lut: colour.LUT3D):
+    table = lut.table
+    min_val = float(table.min())
+    max_val = float(table.max())
+
+    clipped = np.logical_or(table < 0.0, table > 1.0)
+    clipped_ratio = clipped.sum() / table.size * 100.0
+
+    return {
+        "min": min_val,
+        "max": max_val,
+        "clipped_ratio": clipped_ratio,
+    }
 
 def _combine_single_pair(lut1_path, lut2_path, output_path):
     """
@@ -59,11 +73,36 @@ def _combine_single_pair(lut1_path, lut2_path, output_path):
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
+        # 5. Analyze LUT range
+        stats = analyze_lut_range(combined_lut)
+
         colour.write_LUT(combined_lut, out_path)
         print(f"[OK] Saved: {os.path.abspath(out_path)}")
 
+        # 6. Return analysis result (for GUI)
+        return {
+            "name": new_name,
+            "status": "ok",
+            "clipped": stats["clipped_ratio"] > 0,
+            "clip_ratio": stats["clipped_ratio"],
+            "min": stats["min"],
+            "max": stats["max"],
+            "path": out_path,
+            "output": out_path
+        }
+
     except Exception as e:
         print(f"[ERROR] Failed combining {lut1_path} and {lut2_path}: {e}")
+        return {
+            "name": f"{os.path.basename(lut1_path)}_ERROR",
+            "status": "error",
+            "clipped": False,
+            "clip_ratio": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "path": "",
+            "output": f"Error: {str(e)}"
+        }
 
 
 def process_luts(input1, input2, output_path, max_workers=None):
@@ -82,6 +121,8 @@ def process_luts(input1, input2, output_path, max_workers=None):
     if max_workers is None:
         max_workers = cpu_count()
 
+    results = []
+
     is_dir1 = os.path.isdir(input1)
     is_dir2 = os.path.isdir(input2)
 
@@ -98,15 +139,14 @@ def process_luts(input1, input2, output_path, max_workers=None):
         if os.path.isdir(output_path) or not output_path.lower().endswith(".cube"):
             base1 = os.path.splitext(os.path.basename(input1))[0]
             base2 = os.path.splitext(os.path.basename(input2))[0]
-            out_filename = f"{base1}_PLUS_{base2}.cube"
-            if os.path.isdir(output_path):
-                output_file = os.path.join(output_path, out_filename)
-            else:
-                # If output_path is not a dir and not ending with .cube, treat as dir
-                output_file = os.path.join(output_path, out_filename)
+            filename = f"{base1}_PLUS_{base2}.cube"
+            output_file = os.path.join(output_path, filename)
         else:
             output_file = output_path
-        _combine_single_pair(input1, input2, output_file)
+
+        result = _combine_single_pair(input1, input2, output_file)
+        if result:
+            results.append(result)
 
     # Case 2: Dir + File (Iterate input1, apply input2 to all)
     elif is_dir1:
@@ -132,11 +172,9 @@ def process_luts(input1, input2, output_path, max_workers=None):
             }
 
             for future in as_completed(futures):
-                file_path = futures[future]
-                try:
-                    future.result()
-                except Exception as e:
-                    print(f"[ERROR] Failed processing {file_path}: {e}")
+                result = future.result()
+                if result:
+                    results.append(result)
 
     # Case 3: File + Dir (Apply file first, then iterate input2)
     elif is_dir2:
@@ -160,11 +198,11 @@ def process_luts(input1, input2, output_path, max_workers=None):
             }
 
             for future in as_completed(futures):
-                file_path = futures[future]
-                try:
-                    future.result()
-                except Exception as e:
-                    print(f"[ERROR] Failed processing {file_path}: {e}")
+                result = future.result()
+                if result:
+                    results.append(result)
+
+    return results
 
 
 # --- Usage Example ---

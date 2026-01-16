@@ -294,6 +294,28 @@ class LUTWorkflowGUI:
         )
         self.concat_console.pack(fill="both", expand=True)
 
+        # Results
+        results_frame = ttk.LabelFrame(main_frame, text="Results", padding="5")
+        results_frame.pack(fill="both", expand=True, pady=5)
+
+        columns = ("name", "status", "clipped", "clip_ratio", "output")
+        self.concat_results_tree = ttk.Treeview(
+            results_frame, columns=columns, show="headings", height=8
+        )
+        self.concat_results_tree.pack(fill="both", expand=True)
+
+        self.concat_results_tree.heading("name", text="Name")
+        self.concat_results_tree.heading("status", text="Status")
+        self.concat_results_tree.heading("clipped", text="Clipped")
+        self.concat_results_tree.heading("clip_ratio", text="Clip %")
+        self.concat_results_tree.heading("output", text="Output")
+
+        self.concat_results_tree.column("name", width=200)
+        self.concat_results_tree.column("status", width=80, anchor="center")
+        self.concat_results_tree.column("clipped", width=80, anchor="center")
+        self.concat_results_tree.column("clip_ratio", width=80, anchor="center")
+        self.concat_results_tree.column("output", width=400)
+
     def create_compare_tab(self):
         """Tab 3: Compare Images"""
         tab = ttk.Frame(self.notebook)
@@ -577,6 +599,37 @@ class LUTWorkflowGUI:
         thread = threading.Thread(target=wrapper, daemon=True)
         thread.start()
 
+    def update_concat_results(self, results):
+        tree = self.concat_results_tree
+
+        # Clear old rows
+        for row in tree.get_children():
+            tree.delete(row)
+
+        for item in results:
+            clipped = item.get("clipped", False)
+            status = item.get("status", "unknown")
+
+            tag = "error" if status != "ok" else ("clipped" if clipped else "ok")
+
+            tree.insert(
+                "",
+                tk.END,
+                values=(
+                    item.get("name", ""),
+                    status.upper(),
+                    "YES" if clipped else "NO",
+                    f"{item.get('clip_ratio', 0.0) * 100:.2f}%",
+                    item.get("output", ""),
+                ),
+                tags=(tag,),
+            )
+
+        # Row colors
+        tree.tag_configure("ok", background="#e8f5e9")
+        tree.tag_configure("clipped", background="#fff8e1")
+        tree.tag_configure("error", background="#ffebee")
+
     def generate_lut(self):
         def task():
             source = self.gen_source.get()
@@ -619,7 +672,8 @@ class LUTWorkflowGUI:
             if not output:
                 raise ValueError("Please specify output path")
 
-            process_luts(input1, input2, output, max_workers=workers)
+            results = process_luts(input1, input2, output, max_workers=workers)
+            self.root.after(0, lambda: self.update_concat_results(results))
 
         self.run_in_thread(task, self.concat_console)
 
