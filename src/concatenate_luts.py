@@ -13,7 +13,7 @@ def analyze_lut_range(lut: colour.LUT3D):
     max_val = float(table.max())
 
     clipped = np.logical_or(table < 0.0, table > 1.0)
-    clipped_ratio = clipped.sum() / table.size * 100.0
+    clipped_ratio = clipped.sum() / table.size
 
     return {
         "min": min_val,
